@@ -4,15 +4,31 @@ require(`dotenv`).config({
 
 module.exports = {
   siteMetadata: {
-    siteTitleAlt: `Jodie - Gatsby Starter Portfolio`,
+    // Used for the title template on pages other than the index site
+    siteTitle: `Henrik Melsom`,
+    // Default title of the page
+    siteTitleAlt: `Henrik Melsom - Tech Art`,
+    // Can be used for e.g. JSONLD
+    siteHeadline: `Henrik Melsom - Techie Artsy`,
+    // Will be used to generate absolute URLs for og:image etc.
+    siteUrl: `https://henrikmelsom.com`,
+    // Used for SEO
+    siteDescription: `Showcase page for tech artist Henrik Melsom.`,
+    // Will be set on the html tag
+    siteLanguage: `en`,
+    // Used for og:image and must be placed inside the `static` folder
+    siteImage: `/banner.jpg`,
+    // Twitter Handle
+    author: `@lekoarts_de`,
   },
   plugins: [
     {
       resolve: `@lekoarts/gatsby-theme-jodie`,
       // See the theme's README for all available options
       options: {
+        projectsUrl: "/",
         navigation: [
-          { name: `Projects`, slug: `/projects` },
+          { name: `Showcases`, slug: `/` },
           { name: `Instagram`, slug: `/instagram` },
           { name: `About`, slug: `/about` },
         ],
@@ -27,19 +43,19 @@ module.exports = {
     {
       resolve: `gatsby-source-instagram`,
       options: {
-        username: `2315642426`,
+        username: `4058597312`,
       },
     },
     `gatsby-plugin-sitemap`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `jodie - @lekoarts/gatsby-theme-jodie`,
-        short_name: `jodie`,
-        description: `Image-heavy photography portfolio with colorful accents & customizable pages. Includes adaptive image grids powered by CSS grid and automatic image integration into projects.`,
+        name: `Henrik Melsom - Tech Art`,
+        short_name: `Henrik Melsom`,
+        description: `Showcase page for tech artist Henrik Melsom.`,
         start_url: `/`,
         background_color: `#ffffff`,
-        theme_color: `#b75e09`,
+        theme_color: `#000000`,
         display: `standalone`,
         icons: [
           {
