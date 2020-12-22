@@ -42,7 +42,7 @@ const Footer = ({ bg }: { bg: string }) => {
           aria-label="Link to the theme's GitHub repository"
           href="https://github.com/LekoArts/gatsby-themes/tree/master/themes/gatsby-theme-jodie"
         >
-          this
+          Jodie
         </Link>
         .
       </div>

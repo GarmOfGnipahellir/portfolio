@@ -1,0 +1,56 @@
+---
+title: "Procedural Lightning"
+shortTitle: "Houdini Procedural Lightning"
+category: "Houdini"
+color: "white"
+cover: "./cover.png"
+date: "2020-12-22"
+---
+
+I made some procedural lightning in Houdini for a stylized project. There are two variants which both outputs a mesh for GPU rasterization!
+
+## Line Subdivision
+
+import imgSubdivLineExamples from "./subdiv-line-examples.png";
+
+<img src={imgSubdivLineExamples} style="width: 70ch" />
+<p style="text-align: center; margin: 0">
+  <i>This is just a bunch of quick OpenGL renders.</i>
+</p>
+
+The first method is a simple but effective technique, it's basically consists of two similar operations.
+
+> **Jitter**  
+> Subdivides every line and offsets the new point based on the length of the original line.
+
+> **Fork**  
+> Same as above but also creates a new line from the new point extending in the direction of the offset.
+
+This is implemented as a simple to use node in Houdini wich jitters polylines with an option to also fork it.
+It was super easy and fun to model different lighting bolt structures with this!
+
+Also included are some utility nodes to create a starting point and also meshing the resulting lightning bolt.
+
+Check out [this awesome set of slides](http://developer.download.nvidia.com/SDK/10/direct3d/Source/Lightning/doc/lightning_doc.pdf) from Nvidia for more details (and a great rendering method)!
+
+## Rapidly-exploring Random Tree
+
+import imgRandomTreeExamples from "./random-tree-examples.png";
+
+<img src={imgRandomTreeExamples} style="width: 70ch" />
+<p style="text-align: center; margin: 0">
+  <i>This is just a bunch of quick OpenGL renders.</i>
+</p>
+
+This is more complex and slower to generate but still usable and a cool effect.
+
+It's similar to space colonization algorithms but instead of branches moving towards the nearest seed points they are picked at random which creates a more jagged look.
+
+> They're called seed points but you can think of them as target points.
+
+This was also implemented as a node in Houdini taking in two point clouds one containing source points and the other seed points.
+And then it just runs the algorithm until all seeds are reached or the max iteration cap is reached.
+
+You can also target a specific point and run it until that point is reached for a more directed approach.
+
+[This answer](https://gamedev.stackexchange.com/a/100583) on StackExchange was a great help!

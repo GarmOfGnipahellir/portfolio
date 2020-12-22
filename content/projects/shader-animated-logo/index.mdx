@@ -1,0 +1,29 @@
+---
+title: "Animated Logo"
+shortTitle: "Shader Animated Logo"
+category: "Shader"
+color: "white"
+cover: "./cover.png"
+date: "2020-12-22"
+---
+
+I had some spare time one evening and decided to do some animated logo design with shaders.
+
+<div style="margin: auto">
+  <iframe
+    width="640"
+    height="360"
+    frameborder="0"
+    src="https://www.shadertoy.com/embed/wdsGDH?gui=true&t=10&paused=true&muted=false"
+    allowfullscreen
+  ></iframe>
+</div>
+<p style="text-align: center; margin: 0">
+  Press play to start or <a href="https://www.shadertoy.com/view/wdsGDH">watch at ShaderToy</a>.
+</p>
+
+It's simply just drawing with a bunch of SDF functions nothing fancy, the tricky part was animating the water ripples.
+
+Yes it's both water and beard, you can't see it? ;)
+
+My first approach was also very aliased but it was hackily solved by raising the SDF function to a high exponent and clamping instead of stepping.

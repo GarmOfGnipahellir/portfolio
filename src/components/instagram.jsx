@@ -9,7 +9,7 @@ const Instagram = () => {
 
   return (
     <div className="instagram-grid">
-      {nodes.map((post) => {
+      {nodes.slice(0, -3).map((post) => {
         const title = post.caption ? post.caption.split(`#`)[0] : ``
         const date = new Date(post.timestamp * 1000).toLocaleDateString(`de-DE`)
 
