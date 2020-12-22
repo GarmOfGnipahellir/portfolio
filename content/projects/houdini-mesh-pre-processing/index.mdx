@@ -7,12 +7,40 @@ cover: "./cover.png"
 date: "2020-12-21"
 ---
 
+From the Epic MegaJam 2020 project I worked on.
+
+---
+
+We had many parts for our mobility scooter customization and wanted an efficient way of preparing these models for import into Unreal.
+This solution was performant and allowed us to better balance work on the team.
+
+I made a PDG setup with a Houdini server to process every FBX in separate sessions because I used the FBX scene import to get the materials into Houdini.
+
+The send command contains a quick and dirty python script to import the FBX, hooking it up to some nodes and saving it in a hipfile.
+
+import imgPdgNetwork from "./pdg-network.png"
 
 <div style="display: flex">
   <div style="flex-grow: 1">
-    1
+    <img src={imgPdgNetwork} height="612px" />
   </div>
   <div style="flex-grow: 1">
-    2
+    <iframe
+      src="https://carbon.now.sh/embed?bg=rgba%28255%2C255%2C255%2C1%29&t=vscode&wt=none&l=python&ds=true&dsyoff=0px&dsblur=16px&wc=true&wa=true&pv=20px&ph=20px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=1x&wm=false&code=from%2520os%2520import%2520path%250A%250Ahou.hipFile.clear%28True%29%250A%250Ahou.hda.installFile%28%2522%2524HIP%252Fhda%252Ftransform_material_attribs.hdalc%2522%29%250A%250Afbxpath%2520%253D%2520%2522%2560%2540pdg_input%2560%2522%250Afilename%2520%253D%2520path.splitext%28%2522%2560%2540filename%2560%2522%29%255B0%255D%250Amatname%2520%253D%2520%2522MI_%2522%252Bfilename%255B3%253A%255D%250A%250Afbx%2520%253D%2520hou.hipFile.importFBX%28fbxpath%252C%2520%250A%2520%2520%2520%2520convert_into_y_up_coordinate_system%253DTrue%29%255B0%255D%250Amesh%2520%253D%2520fbx.glob%28filename%252B%2522*%2522%29%255B0%255D%250A%250Afilenode%2520%253D%2520mesh.node%28mesh.name%28%29%29%250A%250Atma%2520%253D%2520mesh.createNode%28%2522transform_material_attribs%2522%252C%2520%2522tma%2522%29%250Atma.setFirstInput%28filenode%29%250Atma.parm%28%2522fbxnode%2522%29.set%28fbx.path%28%29%29%250Atma.parm%28%2522newmat%2522%29.set%28matname%29%250Atma.setGenericFlag%28hou.nodeFlag.Display%252C%25201%29%250Atma.setGenericFlag%28hou.nodeFlag.Render%252C%25201%29%250A%250Arop%2520%253D%2520hou.node%28%2522%252Fout%2522%29.createNode%28%27filmboxfbx%27%252C%2520%27output%27%29%250Arop.parm%28%2522startnode%2522%29.set%28fbx.path%28%29%29%250Arop.parm%28%2522sopoutput%2522%29.set%28%2522%2524HIP%252Fexport%252F%2560%2540filename%2560%2522%29%250A%250Ahou.hipFile.save%28%2522%2524HIP%252Fhip%252F%2560%2540filename%2560.hiplc%2522%29"
+      style="width: 618px; height: 612px; border:0; transform: scale(1); overflow:hidden;"
+      sandbox="allow-scripts allow-same-origin">
+    </iframe>
   </div>
 </div>
+
+You might have noticed that we also install an HDA. It contains the transform_material_attribs node responsible for translating material properties to attributes and assigning a new material to the entire mesh.
+
+Almost all of the magic in this node happens in a python node with another quick and dirty script.
+
+<iframe
+  src="https://carbon.now.sh/embed?bg=rgba%28255%2C255%2C255%2C1%29&t=vscode&wt=none&l=python&ds=true&dsyoff=0px&dsblur=16px&wc=true&wa=true&pv=20px&ph=20px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=1x&wm=false&code=node%2520%253D%2520hou.pwd%28%29%250Afbxnode%2520%253D%2520node.node%28%2522..%2522%29.evalParm%28%2522fbxnode%2522%29%250Anewmat%2520%253D%2520node.node%28%2522..%2522%29.evalParm%28%2522newmat%2522%29%250Ageo%2520%253D%2520node.geometry%28%29%250Ageo.addAttrib%28hou.attribType.Prim%252C%2520%2522Cd%2522%252C%2520hou.Vector3%28%280.0%252C%25200.0%252C%25200.0%29%29%29%250Ageo.addAttrib%28hou.attribType.Prim%252C%2520%2522uv2%2522%252C%2520hou.Vector2%28%280.0%252C%25200.0%29%29%29%250A%250Afor%2520prim%2520in%2520geo.prims%28%29%253A%250A%2520%2520%2520%2520materialpath%2520%253D%2520prim.stringAttribValue%28%2522shop_materialpath%2522%29%250A%2520%2520%2520%2520if%2520not%2520materialpath.startswith%28%2522%252Fobj%2522%29%253A%250A%2520%2520%2520%2520%2520%2520%2520%2520materialpath%2520%253D%2520fbxnode%2520%252B%2520%2522%252Fmaterials%252F%2522%2520%252B%2520materialpath%250A%2520%2520%2520%2520materialnode%2520%253D%2520hou.node%28materialpath%29%250A%2520%2520%2520%2520%250A%2520%2520%2520%2520prim.setAttribValue%28%2522Cd%2522%252C%2520%250A%2520%2520%2520%2520%2520%2520%2520%2520hou.Vector3%28%28%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520materialnode.evalParm%28%2522basecolorr%2522%29%252C%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520materialnode.evalParm%28%2522basecolorg%2522%29%252C%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520materialnode.evalParm%28%2522basecolorb%2522%29%252C%250A%2520%2520%2520%2520%2520%2520%2520%2520%29%29%29%250A%2520%2520%2520%2520prim.setAttribValue%28%2522uv2%2522%252C%2520%250A%2520%2520%2520%2520%2520%2520%2520%2520hou.Vector2%28%28%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520materialnode.evalParm%28%2522basecolor_useTexture%2522%29%252C%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520materialnode.evalParm%28%2522metallic%2522%29%252C%250A%2520%2520%2520%2520%2520%2520%2520%2520%29%29%29%250A%2520%2520%2520%2520%250A%2520%2520%2520%2520prim.setAttribValue%28%2522shop_materialpath%2522%252C%2520newmat%29"
+  style="width: 70ch; height: 576px; border:0; transform: scale(1); overflow:hidden; margin-left: auto"
+  sandbox="allow-scripts allow-same-origin">
+</iframe>
+
+If our materials had been more complex, we could have baked them to texture maps instead. Since our style was so simple, this was more efficient.
